@@ -1,5 +1,7 @@
 # Zep/ImGui
 
+![Screenshot](https://github.com/cmaughan/zep_imgui/tree/main/screenshots/screenshot.png)
+
 This example shows two approaches to integrating Zep into an existing ImGui app.  Either as a single header include, or as a library.  Either way Zep is included as a submodule.
 The base app is a simple Vulkan+SDL2+ImGui demo.  The Zep editor has been added to this foundation, but any ImGui backend will work.
 To see the integration look in the following changelist to see what is required:
