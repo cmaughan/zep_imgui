@@ -22,10 +22,28 @@ find_package(Vulkan REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(sdl2 REQUIRED)
 
+# Set this if we are sitting on SDL
+add_definitions(-DZEP_USE_SDL)
+
+# Set this to get the default file system
+add_definitions(-DZEP_FEATURE_CPP_FILE_SYSTEM)
+
+# Set this to use a lib instead of the single header build
+#set (ZEP_LIB 1)
+
+if (DEFINED ZEP_LIB)
+add_subdirectory(zep/src)
+else()
+add_definitions(-DZEP_SINGLE_HEADER=1)
+endif()
+
 set(APP_ROOT ${CMAKE_CURRENT_LIST_DIR})
 configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/config_app.h.cmake ${CMAKE_BINARY_DIR}/config_app.h)
 
-set(SOURCES src/main.cpp)
+set(SOURCES src/main.cpp
+    src/editor.cpp
+    include/editor.h)
+
 if (WIN32)
 set(SOURCES ${SOURCES}
     src/app.manifest)
@@ -36,6 +54,12 @@ target_include_directories(main
     PRIVATE
     ${CMAKE_CURRENT_LIST_DIR} 
     ${CMAKE_BINARY_DIR}
+    zep/include
+    include
     )
 
 target_link_libraries(main PRIVATE imgui::imgui SDL2::SDL2-static SDL2::SDL2main freetype)
+
+if (DEFINED ZEP_LIB)
+target_link_libraries(main PRIVATE Zep::Zep)
+endif()

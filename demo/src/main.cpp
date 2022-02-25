@@ -20,9 +20,12 @@
 #include <vulkan/vulkan.h>
 
 #include <filesystem>
+
 #include "config_app.h"
 
 namespace fs = std::filesystem;
+
+#include "editor.h"
 
 //#define IMGUI_UNLIMITED_FRAME_RATE
 #ifdef _DEBUG
@@ -356,7 +359,7 @@ int main(int, char**)
 
     // Setup window
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL2+Vulkan example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    SDL_Window* window = SDL_CreateWindow("ImGui+SDL2+Vulkan+Zep example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
     if (!window)
     {
         printf("%s\n", SDL_GetError());
@@ -443,7 +446,7 @@ int main(int, char**)
     //IM_ASSERT(font != NULL);
 
     // Note: Adjust font size as appropriate!
-	auto fontPath = fs::path(APP_ROOT) / "run_tree" / "fonts" / "Roboto-Regular.ttf";
+	auto fontPath = fs::path(APP_ROOT) / "run_tree" / "fonts" / "Cousine-Regular.ttf";
     io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 26);
 
     // Upload Fonts
@@ -479,6 +482,7 @@ int main(int, char**)
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
+    bool z_init = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
@@ -518,6 +522,21 @@ int main(int, char**)
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
+
+        if (!z_init)
+        {
+            // Called once the fonts/device is guaranteed setup
+            zep_init(Zep::NVec2f(1.0f, 1.0f));
+            zep_load(Zep::ZepPath(APP_ROOT) / "src" / "main.cpp");
+            z_init = true;
+        }
+
+        // Required for CTRL+P and flashing cursor.
+        zep_update();
+
+        // Just show it
+        static Zep::NVec2i size = Zep::NVec2i(640, 480);
+        zep_show(size);
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
@@ -580,6 +599,8 @@ int main(int, char**)
     }
 
     // Cleanup
+    zep_destroy();
+
     err = vkDeviceWaitIdle(g_Device);
     check_vk_result(err);
     ImGui_ImplVulkan_Shutdown();
