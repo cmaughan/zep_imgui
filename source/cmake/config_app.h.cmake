@@ -1,0 +1,5 @@
+#cmakedefine APPLICATION_NAME "${APPLICATION_NAME}"
+#cmakedefine APPLICATION_VERSION "${APPLICATION_VERSION}"
+#cmakedefine APP_ROOT "${APP_ROOT}"
+
+

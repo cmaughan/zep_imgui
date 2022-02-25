@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -17,9 +18,12 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../vcpkg/scripts/buildsyste
 project(Example)
 
 find_package(imgui REQUIRED)
-find_package(vulkan REQUIRED)
-find_package(freetype REQUIRED)
+find_package(Vulkan REQUIRED)
+find_package(Freetype REQUIRED)
 find_package(sdl2 REQUIRED)
+
+set(APP_ROOT ${CMAKE_CURRENT_LIST_DIR})
+configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/config_app.h.cmake ${CMAKE_BINARY_DIR}/config_app.h)
 
 set(SOURCES src/main.cpp)
 if (WIN32)
@@ -27,5 +31,11 @@ set(SOURCES ${SOURCES}
     src/app.manifest)
 endif()
 add_executable(main ${SOURCES})
+
+target_include_directories(main
+    PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR} 
+    ${CMAKE_BINARY_DIR}
+    )
 
 target_link_libraries(main PRIVATE imgui::imgui SDL2::SDL2-static SDL2::SDL2main freetype)

@@ -19,6 +19,11 @@
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.h>
 
+#include <filesystem>
+#include "config_app.h"
+
+namespace fs = std::filesystem;
+
 //#define IMGUI_UNLIMITED_FRAME_RATE
 #ifdef _DEBUG
 #define IMGUI_VULKAN_DEBUG_REPORT
@@ -436,6 +441,10 @@ int main(int, char**)
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
+
+    // Note: Adjust font size as appropriate!
+	auto fontPath = fs::path(APP_ROOT) / "run_tree" / "fonts" / "Roboto-Regular.ttf";
+    io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 26);
 
     // Upload Fonts
     {
