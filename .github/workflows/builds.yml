@@ -1,0 +1,39 @@
+name: Builds
+
+on:
+  # Do it on every push or PR on these branches
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Do build on demand
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: "${{matrix.title}} (${{matrix.cc}}, ${{matrix.arch}}, ${{matrix.build_type}})"
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Build on Mac and Linux is possible too (all code is cross platform), just windows for now. 
+          - { title: "Windows", os: "windows-latest", cc: "vs2022", arch: "x64", build_type: "Release", package_type: "x64-windows-static-md", script: "bat" }
+          - { title: "Windows", os: "windows-latest", cc: "vs2022", arch: "x64", build_type: "Debug", package_type: "x64-windows-static-md", script: "bat" }
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Build Windows
+      working-directory: ${{github.workspace}}
+      shell: cmd
+      run: |
+        git submodule update --init
+        cd demo
+        prebuild.bat
+        config.bat
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        cmake --build . --config ${{ matrix.build_type }}
+
