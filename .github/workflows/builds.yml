@@ -32,18 +32,18 @@ jobs:
 
     - name: Prebuild
       working-directory: ${{github.workspace}}
-      shell: cmd
+      shell: bash
       run: |
         git submodule update --init
         cd demo
-        prebuild.bat
+        ./prebuild.bat
 
     - name: Build Windows
       working-directory: ${{github.workspace}}
-      shell: cmd
+      shell: bash
       run: |
         cd demo
-        config.bat
+        ./config.bat
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         cmake --build . --config ${{ matrix.build_type }}
