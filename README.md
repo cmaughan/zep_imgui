@@ -1,7 +1,7 @@
 # Zep/ImGui
 
 [![Builds](https://github.com/cmaughan/zep_imgui/actions/workflows/builds.yml/badge.svg)](https://github.com/cmaughan/zep_imgui/actions/workflows/builds.yml)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/vulkan_imgui_vcpkg_starter/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/cmaughan/zep_imgui/blob/main/LICENSE)
 
 ![Screenshot](https://github.com/cmaughan/zep_imgui/blob/main/screenshots/screenshot.png)
 

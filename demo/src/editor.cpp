@@ -3,11 +3,14 @@
 #define ZEP_SINGLE_HEADER_BUILD
 #endif
 
+//#define ZEP_CONSOLE 
 #include "editor.h"
 #include <functional>
 #include <filesystem>
 #include "config_app.h"
-
+#ifdef ZEP_CONSOLE
+#include <zep\imgui\console_imgui.h>
+#endif
 namespace fs = std::filesystem;
 
 using namespace Zep;
@@ -69,13 +72,21 @@ struct ZepWrapper : public Zep::IZepComponent
     std::function<void(std::shared_ptr<Zep::ZepMessage>)> Callback;
 };
 
+#ifdef ZEP_CONSOLE
+std::shared_ptr<ImGui::ZepConsole> spZep;
+#else
 std::shared_ptr<ZepWrapper> spZep;
+#endif
 
 void zep_init(const Zep::NVec2f& pixelScale)
 {
+#ifdef ZEP_CONSOLE
+    spZep = std::make_shared<ImGui::ZepConsole>(Zep::ZepPath(APP_ROOT));
+#else
     // Initialize the editor and watch for changes
     spZep = std::make_shared<ZepWrapper>(APP_ROOT, Zep::NVec2f(pixelScale.x, pixelScale.y), [](std::shared_ptr<ZepMessage> spMessage) -> void {
     });
+#endif
 
     auto& display = spZep->GetEditor().GetDisplay();
     auto pImFont = ImGui::GetIO().Fonts[0].Fonts[0];
@@ -85,6 +96,7 @@ void zep_init(const Zep::NVec2f& pixelScale)
     display.SetFont(ZepTextType::Heading1, std::make_shared<ZepFont_ImGui>(display, pImFont, int(pixelHeight * 1.5)));
     display.SetFont(ZepTextType::Heading2, std::make_shared<ZepFont_ImGui>(display, pImFont, int(pixelHeight * 1.25)));
     display.SetFont(ZepTextType::Heading3, std::make_shared<ZepFont_ImGui>(display, pImFont, int(pixelHeight * 1.125)));
+
 }
 
 void zep_update()
@@ -107,12 +119,18 @@ ZepEditor& zep_get_editor()
 
 void zep_load(const Zep::ZepPath& file)
 {
+#ifndef ZEP_CONSOLE
     auto pBuffer = zep_get_editor().InitWithFileOrDir(file);
+#endif
 }
 
 void zep_show(const Zep::NVec2i& displaySize)
 {
     bool show = true;
+#ifdef ZEP_CONSOLE
+    spZep->Draw("Console", &show, ImVec4(0, 0, 500, 400), true);
+    spZep->AddLog("Hello!");
+#else
     ImGui::SetNextWindowSize(ImVec2(displaySize.x, displaySize.y), ImGuiCond_FirstUseEver);
     if (!ImGui::Begin("Zep", &show, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_MenuBar))
     {
@@ -147,4 +165,5 @@ void zep_show(const Zep::NVec2i& displaySize)
         ImGui::SetWindowFocus();
     }
     ImGui::End();
+#endif
 }
