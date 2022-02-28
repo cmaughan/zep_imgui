@@ -43,6 +43,7 @@ jobs:
       shell: cmd
       run: |
         cd demo
+        config.bat
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         cmake --build . --config ${{ matrix.build_type }}
