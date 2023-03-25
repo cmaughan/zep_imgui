@@ -88,6 +88,9 @@ void zep_init(const Zep::NVec2f& pixelScale)
     });
 #endif
 
+    // This is an example of adding different fonts for text styles.
+    // If you ":e test.md" in the editor and type "# Heading 1" you will
+    // see that Zep picks a different font size for the heading.
     auto& display = spZep->GetEditor().GetDisplay();
     auto pImFont = ImGui::GetIO().Fonts[0].Fonts[0];
     auto pixelHeight = pImFont->FontSize;
@@ -101,6 +104,8 @@ void zep_init(const Zep::NVec2f& pixelScale)
 
 void zep_update()
 {
+    // This is required to make the editor cursor blink, and for the :ZTestFlash
+    // example
     if (spZep)
     {
         spZep->GetEditor().RefreshRequired();
