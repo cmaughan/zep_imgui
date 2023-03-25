@@ -527,7 +527,7 @@ int main(int, char**)
         {
             // Called once the fonts/device is guaranteed setup
             zep_init(Zep::NVec2f(1.0f, 1.0f));
-            zep_load(Zep::ZepPath(APP_ROOT) / "src" / "main.cpp");
+            zep_load(fs::path(APP_ROOT) / "src" / "main.cpp");
             z_init = true;
         }
 

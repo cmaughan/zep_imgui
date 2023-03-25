@@ -44,7 +44,7 @@ private:
 struct ZepWrapper : public Zep::IZepComponent
 {
     ZepWrapper(const fs::path& root_path, const Zep::NVec2f& pixelScale, std::function<void(std::shared_ptr<Zep::ZepMessage>)> fnCommandCB)
-        : zepEditor(Zep::ZepPath(root_path.string()), pixelScale)
+        : zepEditor(fs::path(root_path.string()), pixelScale)
         , Callback(fnCommandCB)
     {
         zepEditor.RegisterCallback(this);
@@ -117,10 +117,10 @@ ZepEditor& zep_get_editor()
     return spZep->GetEditor();
 }
 
-void zep_load(const Zep::ZepPath& file)
+void zep_load(const fs::path& file)
 {
 #ifndef ZEP_CONSOLE
-    auto pBuffer = zep_get_editor().InitWithFileOrDir(file);
+    auto pBuffer = zep_get_editor().InitWithFileOrDir(file.string());
 #endif
 }
 
